@@ -408,28 +408,52 @@ $BtnApply.Add_Click({
 })
 
 $BtnRevert.Add_Click({
+    # Coletar Tweaks selecionados
     $SelectedTweaks = @()
-    foreach ($row in $TweakGrid.Rows) {
-        if ($row.Cells["Check"].Value -eq $true) {
-            $SelectedTweaks += $row.Tag
+    if ($Global:TweakGrid) {
+        foreach ($row in $Global:TweakGrid.Rows) {
+            if ($row.Cells["Check"].Value -eq $true) {
+                $SelectedTweaks += $row.Tag
+            }
         }
     }
 
-    if ($SelectedTweaks.Count -gt 0) {
-        if ([System.Windows.Forms.MessageBox]::Show("Restaurar itens selecionados?", "Confirmar", 4) -eq "Yes") {
+    # Coletar Apps selecionados
+    $SelectedApps = @()
+    if ($Global:SoftCheckBoxes) {
+        $SelectedApps = $Global:SoftCheckBoxes | Where-Object { $_.Checked }
+    }
+
+    if ($SelectedTweaks.Count -gt 0 -or $SelectedApps.Count -gt 0) {
+        if ([System.Windows.Forms.MessageBox]::Show((Get-Text "BtnUndo") + "?", "Confirmar", 4) -eq "Yes") {
+
+            # Desinstalar Apps
+            foreach ($chk in $SelectedApps) {
+                $app = $chk.Tag
+                $StatusLabel.Text = "Desinstalando: $($app.Nome)"
+                $Form.Refresh()
+                Start-Process winget -ArgumentList "uninstall --id $($app.Id) -e --source winget --accept-source-agreements" -NoNewWindow -PassThru -Wait
+            }
+
+            # Reverter Tweaks
             foreach ($tweak in $SelectedTweaks) {
                 $StatusLabel.Text = "Restaurando: $($tweak.Nome)"
                 $Form.Refresh()
                 try { & $tweak.Desfazer } catch {}
             }
-            Stop-Process -Name explorer -Force
-            Start-Sleep -Seconds 1
-            if (-not (Get-Process explorer -ErrorAction SilentlyContinue)) { Start-Process explorer }
-            $StatusLabel.Text = "Restauração Completa."
-            [System.Windows.Forms.MessageBox]::Show("Itens restaurados.", "Sucesso", 0, 64)
+
+            # Reiniciar Explorer se houve tweaks
+            if ($SelectedTweaks.Count -gt 0) {
+                Stop-Process -Name explorer -Force
+                Start-Sleep -Seconds 1
+                if (-not (Get-Process explorer -ErrorAction SilentlyContinue)) { Start-Process explorer }
+            }
+
+            $StatusLabel.Text = "Concluído."
+            [System.Windows.Forms.MessageBox]::Show("Processo finalizado!", "Sucesso", 0, 64)
         }
     } else {
-        [System.Windows.Forms.MessageBox]::Show("Selecione na lista 'Otimizações' o que deseja desfazer.", "Aviso")
+        [System.Windows.Forms.MessageBox]::Show("Selecione itens para desfazer/desinstalar.", "Aviso")
     }
 })
 

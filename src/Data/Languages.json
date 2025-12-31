@@ -1,7 +1,7 @@
 ﻿{
   "pt-BR": {
     "BtnStart": "Iniciar processo",
-    "BtnUndo": "Desfazer otimizações",
+    "BtnUndo": "Desfazer seleção",
     "CatDevelopment": "Desenvolvimento",
     "CatGames": "Jogos",
     "CatGraphics": "Gráficos",
@@ -162,7 +162,7 @@
   },
   "en-US": {
     "BtnStart": "Start process",
-    "BtnUndo": "Undo tweaks",
+    "BtnUndo": "Undo selection",
     "CatDevelopment": "Development",
     "CatGames": "Games",
     "CatGraphics": "Graphics",
