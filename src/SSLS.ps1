@@ -61,19 +61,25 @@ Add-Type -TypeDefinition $WindowUtilsCode -Language CSharp
 [WindowUtils]::HideConsole()
 
 # --- 4. Carregar módulos ---
-$ScriptPath = $PSScriptRoot
-$ExtrasFile   = Join-Path $ScriptPath "Modules\Extras.ps1"
-$ShortcutsFile = Join-Path $ScriptPath "Modules\Shortcuts.ps1"
-$SoftwareFile = Join-Path $ScriptPath "Modules\Software.ps1"
-$TweaksFile   = Join-Path $ScriptPath "Modules\Tweaks.ps1"
-$WelcomeFile  = Join-Path $ScriptPath "Modules\Welcome.ps1"
+$ModulesPath = Join-Path $PSScriptRoot "Modules"
 
+# Carregar Language.ps1 primeiro para garantir que Get-Text esteja disponível
+$LanguageFile = Join-Path $ModulesPath "Language.ps1"
+if (Test-Path $LanguageFile) {
+    . $LanguageFile
+} else {
+    [System.Windows.Forms.MessageBox]::Show("Erro: Language.ps1 faltando!", "Erro")
+    Exit
+}
 
-if (Test-Path $ExtrasFile)   { . $ExtrasFile }   else { [System.Windows.Forms.MessageBox]::Show("Erro: Extras.ps1 faltando!", "Erro"); Exit }
-if (Test-Path $ShortcutsFile) { . $ShortcutsFile } else { [System.Windows.Forms.MessageBox]::Show("Erro: Shortcuts.ps1 faltando!", "Erro"); Exit }
-if (Test-Path $SoftwareFile) { . $SoftwareFile } else { [System.Windows.Forms.MessageBox]::Show("Erro: Software.ps1 faltando!", "Erro"); Exit }
-if (Test-Path $TweaksFile)   { . $TweaksFile }   else { [System.Windows.Forms.MessageBox]::Show("Erro: Tweaks.ps1 faltando!", "Erro"); Exit }
-if (Test-Path $WelcomeFile)  { . $WelcomeFile }  else { [System.Windows.Forms.MessageBox]::Show("Erro: Welcome.ps1 faltando!", "Erro"); Exit }
+# Carregar outros módulos
+Get-ChildItem -Path $ModulesPath -Filter "*.ps1" | Where-Object { $_.Name -ne "Language.ps1" } | ForEach-Object {
+    try {
+        . $_.FullName
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show("Erro ao carregar $($_.Name): $_", "Erro")
+    }
+}
 
 
 # --- 5. Configuração de cores (Atualizado) ---
@@ -133,13 +139,62 @@ function New-TabButton {
     return $btn
 }
 
-$BtnTabWelcome = New-TabButton -Text "Início" -X 0
-$BtnTab1 = New-TabButton -Text "Programas" -X 180
-$BtnTab2 = New-TabButton -Text "Otimizações" -X 360
-$BtnTab4 = New-TabButton -Text "Atalhos" -X 540
-$BtnTab3 = New-TabButton -Text "Extras" -X 720
+$BtnTabWelcome = New-TabButton -Text (Get-Text "TabWelcome") -X 0
+$BtnTab1 = New-TabButton -Text (Get-Text "TabPrograms") -X 180
+$BtnTab2 = New-TabButton -Text (Get-Text "TabTweaks") -X 360
+$BtnTab4 = New-TabButton -Text (Get-Text "TabShortcuts") -X 540
+$BtnTab3 = New-TabButton -Text (Get-Text "TabExtras") -X 720
 
 $TopPanel.Controls.AddRange(@($BtnTabWelcome, $BtnTab1, $BtnTab2, $BtnTab3, $BtnTab4))
+
+# --- Seletor de Idioma ---
+$CmbLanguage = New-Object System.Windows.Forms.ComboBox
+$CmbLanguage.DropDownStyle = "DropDownList"
+$CmbLanguage.Size = New-Object System.Drawing.Size(80, 25)
+$CmbLanguage.Location = New-Object System.Drawing.Point(1000, 5) # Canto direito
+$CmbLanguage.FlatStyle = "Flat"
+$CmbLanguage.BackColor = $ColorButton
+$CmbLanguage.ForeColor = $ColorText
+$CmbLanguage.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+
+$AvailableLanguages = Get-AvailableLanguages
+foreach ($lang in $AvailableLanguages) {
+    $CmbLanguage.Items.Add($lang) | Out-Null
+}
+$CmbLanguage.SelectedItem = $Global:CurrentLanguage
+
+$CmbLanguage.Add_SelectedIndexChanged({
+    $NewLang = $CmbLanguage.SelectedItem
+    if ($NewLang -ne $Global:CurrentLanguage) {
+        Set-Language $NewLang
+
+        # Atualizar textos das abas
+        $BtnTabWelcome.Text = Get-Text "TabWelcome"
+        $BtnTab1.Text = Get-Text "TabPrograms"
+        $BtnTab2.Text = Get-Text "TabTweaks"
+        $BtnTab4.Text = Get-Text "TabShortcuts"
+        $BtnTab3.Text = Get-Text "TabExtras"
+
+        # Atualizar listas globais com o novo idioma
+        $Global:SoftwareList = Get-SoftwareList
+        $Global:TweaksList = Get-TweaksList
+        $Global:ShortcutsList = Get-ShortcutsList
+
+        # Recarregar abas
+        Initialize-WelcomeTab -ParentPanel $TabWelcome -ColorText $ColorText -ColorAccent $ColorAccent
+        Initialize-SoftwareTab -ParentPanel $TabSoft -ColorBG $ColorBG -ColorAccent $ColorAccent -ColorText $ColorText
+        Initialize-TweaksTab -ParentPanel $TabTweak -ColorPanel $ColorPanel -ColorText $ColorText -ColorBG $ColorBG -ColorAccent $ColorAccent -ColorButton $ColorButton
+        Initialize-ShortcutsTab -ParentPanel $TabShortcuts -ColorBG $ColorBG -ColorButton $ColorButton -ColorText $ColorText -ColorAccent $ColorAccent
+        Initialize-ExtrasTab -ParentPanel $TabExtra -ColorPanel $ColorPanel -ColorText $ColorText -ColorButton $ColorButton -ColorAccent $ColorAccent
+
+        # Atualizar rodapé
+        if ($BtnApply) { $BtnApply.Text = Get-Text "BtnStart" }
+        if ($BtnRevert) { $BtnRevert.Text = Get-Text "BtnUndo" }
+        if ($ChkRestore) { $ChkRestore.Text = Get-Text "ChkRestorePoint" }
+        if ($StatusLabel) { $StatusLabel.Text = Get-Text "StatusWaiting" }
+    }
+})
+$TopPanel.Controls.Add($CmbLanguage)
 
 # Páginas (Agora são painéis)
 $TabWelcome = New-Object System.Windows.Forms.Panel
@@ -205,137 +260,15 @@ $BtnTab4.Add_Click({ & $SwitchTab $BtnTab4 $TabShortcuts })
 Initialize-WelcomeTab -ParentPanel $TabWelcome -ColorText $ColorText -ColorAccent $ColorAccent
 
 # --- Aba 1: Software ---
-$FlowPanel = New-Object System.Windows.Forms.FlowLayoutPanel
-$FlowPanel.Dock = "Fill"
-$FlowPanel.AutoScroll = $true
-$FlowPanel.FlowDirection = "TopDown"
-$FlowPanel.WrapContents = $true
-$FlowPanel.BackColor = $ColorBG
-
-$Categories = $Global:SoftwareList | Select-Object -ExpandProperty Categoria -Unique | Sort-Object
-$SoftCheckBoxes = @()
-
-foreach ($cat in $Categories) {
-    $GroupBox = New-Object System.Windows.Forms.GroupBox
-    $GroupBox.Text = " $cat "
-    $GroupBox.AutoSize = $true
-    $GroupBox.ForeColor = $ColorAccent
-    $GroupBox.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
-    $GroupBox.Margin = New-Object System.Windows.Forms.Padding(10, 10, 10, 20)
-    $GroupBox.Padding = New-Object System.Windows.Forms.Padding(5)
-
-    $GroupPanel = New-Object System.Windows.Forms.FlowLayoutPanel
-    $GroupPanel.FlowDirection = "TopDown"
-    $GroupPanel.AutoSize = $true
-    $GroupPanel.Dock = "Fill"
-
-    $Items = $Global:SoftwareList | Where-Object { $_.Categoria -eq $cat }
-    foreach ($item in $Items) {
-        $cb = New-Object System.Windows.Forms.CheckBox
-        $cb.Text = $item.Nome
-        $cb.Tag = $item
-        $cb.AutoSize = $true
-        $cb.ForeColor = $ColorText
-        $cb.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Regular)
-        $SoftCheckBoxes += $cb
-        $GroupPanel.Controls.Add($cb)
-    }
-    $GroupBox.Controls.Add($GroupPanel)
-    $FlowPanel.Controls.Add($GroupBox)
-}
-$TabSoft.Controls.Add($FlowPanel)
+Initialize-SoftwareTab -ParentPanel $TabSoft -ColorBG $ColorBG -ColorAccent $ColorAccent -ColorText $ColorText
 
 # --- Aba 2: Tweaks ---
-$TweakGrid = New-Object System.Windows.Forms.DataGridView
-$TweakGrid.Dock = "Fill"
-$TweakGrid.BackgroundColor = $ColorPanel
-$TweakGrid.ForeColor = $ColorText
-$TweakGrid.GridColor = [System.Drawing.ColorTranslator]::FromHtml("#505050")
-$TweakGrid.BorderStyle = "None"
-$TweakGrid.CellBorderStyle = "SingleHorizontal"
-$TweakGrid.RowHeadersVisible = $false
-$TweakGrid.AllowUserToAddRows = $false
-$TweakGrid.AllowUserToDeleteRows = $false
-$TweakGrid.AllowUserToResizeRows = $false
-$TweakGrid.SelectionMode = "FullRowSelect"
-$TweakGrid.MultiSelect = $false
-$TweakGrid.ReadOnly = $false
+Initialize-TweaksTab -ParentPanel $TabTweak -ColorPanel $ColorPanel -ColorText $ColorText -ColorBG $ColorBG -ColorAccent $ColorAccent -ColorButton $ColorButton
 
-# Estilos
-$TweakGrid.DefaultCellStyle.BackColor = $ColorPanel
-$TweakGrid.DefaultCellStyle.ForeColor = $ColorText
-$TweakGrid.DefaultCellStyle.SelectionBackColor = $ColorButton
-$TweakGrid.DefaultCellStyle.SelectionForeColor = $ColorText
+# --- Aba 3: Atalhos ---
+Initialize-ShortcutsTab -ParentPanel $TabShortcuts -ColorBG $ColorBG -ColorButton $ColorButton -ColorText $ColorText -ColorAccent $ColorAccent
 
-$TweakGrid.EnableHeadersVisualStyles = $false
-$TweakGrid.ColumnHeadersDefaultCellStyle.BackColor = $ColorBG
-$TweakGrid.ColumnHeadersDefaultCellStyle.ForeColor = $ColorAccent
-$TweakGrid.ColumnHeadersDefaultCellStyle.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
-$TweakGrid.ColumnHeadersBorderStyle = "None"
-$TweakGrid.ColumnHeadersHeight = 35
-$TweakGrid.ColumnHeadersHeightSizeMode = "DisableResizing"
-
-# Colunas
-$ColCheck = New-Object System.Windows.Forms.DataGridViewCheckBoxColumn
-$ColCheck.HeaderText = ""
-$ColCheck.Width = 30
-$ColCheck.Name = "Check"
-[void]$TweakGrid.Columns.Add($ColCheck)
-
-$ColName = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-$ColName.HeaderText = "Nome"
-$ColName.Width = 400
-$ColName.Name = "Nome"
-$ColName.ReadOnly = $true
-[void]$TweakGrid.Columns.Add($ColName)
-
-$ColDesc = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-$ColDesc.HeaderText = "Descrição"
-$ColDesc.AutoSizeMode = "Fill"
-$ColDesc.Name = "Descricao"
-$ColDesc.ReadOnly = $true
-[void]$TweakGrid.Columns.Add($ColDesc)
-
-foreach ($tweak in $Global:TweaksList) {
-    $row = $TweakGrid.Rows.Add()
-    $TweakGrid.Rows[$row].Cells["Nome"].Value = $tweak.Nome
-    $TweakGrid.Rows[$row].Cells["Descricao"].Value = $tweak.Descricao
-    $TweakGrid.Rows[$row].Tag = $tweak
-}
-$TabTweak.Controls.Add($TweakGrid)
-
-# --- Aba 4: Atalhos ---
-$ShortcutsFlow = New-Object System.Windows.Forms.FlowLayoutPanel
-$ShortcutsFlow.Dock = "Fill"
-$ShortcutsFlow.AutoScroll = $true
-$ShortcutsFlow.Padding = New-Object System.Windows.Forms.Padding(20)
-$ShortcutsFlow.BackColor = $ColorBG
-
-foreach ($sc in $Global:ShortcutsList) {
-    $btn = New-Object System.Windows.Forms.Button
-    $btn.Text = $sc.Nome
-    $btn.Size = New-Object System.Drawing.Size(200, 60)
-    $btn.Margin = New-Object System.Windows.Forms.Padding(10)
-    $btn.BackColor = $ColorButton
-    $btn.ForeColor = $ColorText
-    $btn.FlatStyle = "Flat"
-    $btn.FlatAppearance.BorderColor = $ColorAccent
-    $btn.FlatAppearance.BorderSize = 1
-    $btn.Font = New-Object System.Drawing.Font("Segoe UI", 10)
-    $btn.Cursor = [System.Windows.Forms.Cursors]::Hand
-    $btn.Tag = $sc
-
-    $btn.Add_Click({
-        $s = $this.Tag
-        try { Invoke-Expression $s.Comando }
-        catch { [System.Windows.Forms.MessageBox]::Show("Erro ao abrir atalho: $_", "Erro") }
-    })
-
-    $ShortcutsFlow.Controls.Add($btn)
-}
-$TabShortcuts.Controls.Add($ShortcutsFlow)
-
-# --- Aba 3: Extra ---
+# --- Aba 4: Extra ---
 Initialize-ExtrasTab -ParentPanel $TabExtra -ColorPanel $ColorPanel -ColorText $ColorText -ColorButton $ColorButton -ColorAccent $ColorAccent
 
 # --- Rodapé ---
@@ -345,7 +278,7 @@ $BottomPanel.Height = 80
 $BottomPanel.BackColor = $ColorPanel
 
 $BtnApply = New-Object System.Windows.Forms.Button
-$BtnApply.Text = "Iniciar processo"
+$BtnApply.Text = (Get-Text "BtnStart")
 $BtnApply.Size = New-Object System.Drawing.Size(220, 50)
 $BtnApply.Location = New-Object System.Drawing.Point(20, 15)
 $BtnApply.BackColor = $ColorGreen
@@ -355,7 +288,7 @@ $BtnApply.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.
 $BtnApply.Cursor = [System.Windows.Forms.Cursors]::Hand
 
 $BtnRevert = New-Object System.Windows.Forms.Button
-$BtnRevert.Text = "Desfazer otimizações"
+$BtnRevert.Text = (Get-Text "BtnUndo")
 $BtnRevert.Size = New-Object System.Drawing.Size(220, 50)
 $BtnRevert.Location = New-Object System.Drawing.Point(260, 15)
 $BtnRevert.BackColor = $ColorRed
@@ -364,7 +297,7 @@ $BtnRevert.FlatStyle = "Flat"
 $BtnRevert.Cursor = [System.Windows.Forms.Cursors]::Hand
 
 $ChkRestore = New-Object System.Windows.Forms.CheckBox
-$ChkRestore.Text = "Criar Ponto de Restauração"
+$ChkRestore.Text = (Get-Text "ChkRestorePoint")
 $ChkRestore.AutoSize = $true
 $ChkRestore.Location = New-Object System.Drawing.Point(500, 15)
 $ChkRestore.ForeColor = $ColorText
@@ -372,7 +305,7 @@ $ChkRestore.Font = New-Object System.Drawing.Font("Segoe UI", 9)
 $ChkRestore.Checked = $true
 
 $StatusLabel = New-Object System.Windows.Forms.Label
-$StatusLabel.Text = "Aguardando seleção..."
+$StatusLabel.Text = (Get-Text "StatusWaiting")
 $StatusLabel.AutoSize = $true
 $StatusLabel.Location = New-Object System.Drawing.Point(500, 45)
 $StatusLabel.ForeColor = [System.Drawing.Color]::Gray
@@ -428,39 +361,39 @@ $Form.Controls.Add($BottomPanel)
 
 # --- Lógica de ação ---
 $BtnApply.Add_Click({
-    $StatusLabel.Text = "Trabalhando..."
+    $StatusLabel.Text = (Get-Text "StatusWorking")
     $Form.Refresh()
 
     if ($ChkRestore.Checked) {
-        $StatusLabel.Text = "Criando Ponto de Restauração..."
+        $StatusLabel.Text = (Get-Text "StatusWorking")
         $Form.Refresh()
         try {
             Checkpoint-Computer -Description "SSLS Auto Restore Point" -RestorePointType "MODIFY_SETTINGS" -ErrorAction Stop
         } catch {
-            [System.Windows.Forms.MessageBox]::Show("Aviso: Não foi possível criar o ponto de restauração.`nErro: $_", "Aviso")
+            [System.Windows.Forms.MessageBox]::Show((Get-Text "MsgRestoreError") + "`nErro: $_", "Aviso")
         }
     }
 
     # Tenta atualizar fontes do Winget se necessário
     try { winget source update } catch {}
 
-    $SelectedApps = $SoftCheckBoxes | Where-Object { $_.Checked }
+    $SelectedApps = $Global:SoftCheckBoxes | Where-Object { $_.Checked }
     foreach ($chk in $SelectedApps) {
         $app = $chk.Tag
-        $StatusLabel.Text = "Instalando: $($app.Nome)"
+        $StatusLabel.Text = (Get-Text "StatusInstalling") + "$($app.Nome)"
         $Form.Refresh()
         Start-Process winget -ArgumentList "install --id $($app.Id) -e --source winget --accept-package-agreements --accept-source-agreements" -NoNewWindow -PassThru -Wait
     }
 
     $SelectedTweaks = @()
-    foreach ($row in $TweakGrid.Rows) {
+    foreach ($row in $Global:TweakGrid.Rows) {
         if ($row.Cells["Check"].Value -eq $true) {
             $SelectedTweaks += $row.Tag
         }
     }
 
     foreach ($tweak in $SelectedTweaks) {
-        $StatusLabel.Text = "Aplicando: $($tweak.Nome)"
+        $StatusLabel.Text = (Get-Text "StatusApplying") + "$($tweak.Nome)"
         $Form.Refresh()
         try { & $tweak.Acao } catch { [System.Windows.Forms.MessageBox]::Show("Erro: $_") }
     }
