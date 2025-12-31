@@ -22,18 +22,19 @@ Um utilitário de automação modular em PowerShell projetado para configurar o 
 * **Extras e Manutenção:**
   * Executor de comandos manuais.
   * Acesso rápido ao MAS (Microsoft Activation Scripts).
+  * Criação rápida de Ponto de Restauração.
 * **Recurso de Reversão (Undo):** Aplicou um tweak e não gostou? O script possui um botão dedicado para **desfazer** as alterações.
 
 ## 📦 Softwares Incluídos
 
 A lista utiliza o repositório oficial do Windows Package Manager (Winget) e inclui:
 
-* **Internet:** Brave, Firefox, Zen Browser, Thunderbird, Discord, WhatsApp, PicoTorrent.
-* **Multimídia:** VLC, Spotify, OBS, Stremio, Audacity, HandBrake, AIMP.
-* **Gráficos:** GIMP, Blender, Inkscape, Krita, Paint.NET, ShareX, IrfanView.
-* **Jogos:** Steam, Epic Games, GOG, Ubisoft Connect, EA App, Prism Launcher, osu!lazer.
-* **Dev:** VS Code, Python, Git, Notepad++, Java (17/21), .NET (6/8), WinSCP.
-* **Sistema:** PowerToys, LibreOffice, NanaZip, Malwarebytes, CPU-Z, Everything, WizTree.
+* **Internet:** Brave, Discord, Firefox, PicoTorrent, Thunderbird, Unigram, Vencord, WhatsApp, Zen Browser.
+* **Multimídia:** AIMP, Audacity, CapCut, foobar2000, HandBrake, K-Lite Codec Pack, OBS Studio, Spotify, Stremio, VLC.
+* **Gráficos:** Affinity, Blender, FastStone, GIMP, Greenshot, Inkscape, IrfanView, Krita, MediBang, Paint.NET, ShareX, XnView MP.
+* **Jogos:** Amazon Games, EA App, Epic Games, Fishstrap, GOG, osu!lazer, Prism Launcher, SRB2, Steam, Ubisoft Connect, YARG.
+* **Dev:** .NET (6/8), FileZilla, Git, Java (17/21), Notepad++, PuTTY, Python, Visual C++, VS Code, WinMerge, WinSCP.
+* **Sistema:** CPU-Z, CrystalDiskInfo, Everything, GPU-Z, KeePassXC, LibreOffice, Malwarebytes, NanaZip, Notion, Open-Shell, PowerToys, Radmin VPN, Revo Uninstaller, SumatraPDF, TeraCopy, Virtual Desktop, VRCX, WizTree.
 
 ## ⚠️ Aviso Legal
 
