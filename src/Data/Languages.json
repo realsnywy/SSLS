@@ -157,7 +157,7 @@
     "TweakTelemetryDesc": "Limita o envio de dados para a Microsoft",
     "TweakTransparency": "Desativar efeitos de transparência",
     "TweakTransparencyDesc": "Melhora a resposta da interface e economiza recursos",
-    "WelcomeDesc": "Snywy's Silly Little Script\n\nSelecione as abas acima para instalar programas, aplicar otimizações ou acessar ferramentas extras.",
+    "WelcomeDesc": "(Snywy's Silly Little Script)\n\nEste programa está em desenvolvimento. Caso encontre algum erro, envie um e-mail para Snywy@proton.me\n\nSelecione as abas acima para instalar programas, aplicar otimizações ou acessar ferramentas extras.",
     "WelcomeTitle": "Bem-vindo ao SSLS"
   },
   "en-US": {
@@ -318,7 +318,7 @@
     "TweakTelemetryDesc": "Limits data sending to Microsoft",
     "TweakTransparency": "Disable transparency effects",
     "TweakTransparencyDesc": "Improves interface response and saves resources",
-    "WelcomeDesc": "Snywy's Silly Little Script\n\nSelect the tabs above to install programs, apply tweaks, or access extra tools.",
+    "WelcomeDesc": "(Snywy's Silly Little Script)\n\nThis program is in development. If you find any errors, please send an email to Snywy@proton.me\n\nSelect the tabs above to install programs, apply tweaks, or access extra tools.",
     "WelcomeTitle": "Welcome to SSLS"
   }
 }
