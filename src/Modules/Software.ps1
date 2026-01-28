@@ -8,7 +8,6 @@
         [PSCustomObject]@{ Nome = "Thunderbird";        Id = "Mozilla.Thunderbird";     Categoria = (Get-Text "CatInternet"); Descricao = (Get-Text "DescThunderbird") },
         [PSCustomObject]@{ Nome = "Telegram Desktop";   Id = "Telegram.TelegramDesktop"; Categoria = (Get-Text "CatInternet"); Descricao = (Get-Text "DescTelegram") },
         [PSCustomObject]@{ Nome = "Vencord";            Id = "Vendicated.Vencord";      Categoria = (Get-Text "CatInternet"); Descricao = (Get-Text "DescVencord") },
-        [PSCustomObject]@{ Nome = "WhatsApp";           Id = "WhatsApp.WhatsApp";       Categoria = (Get-Text "CatInternet"); Descricao = (Get-Text "DescWhatsApp") },
         [PSCustomObject]@{ Nome = "Zen Browser";        Id = "Zen-Team.Zen-Browser";    Categoria = (Get-Text "CatInternet"); Descricao = (Get-Text "DescZen") },
 
         # --- Multimídia ---
