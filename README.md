@@ -1,5 +1,9 @@
 # SSLS - Snywy's Silly Little Script
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e8483ac8-a527-4f48-b5b0-714b7cca3c2a" width="150" alt="SSLS Logo">
+</p>
+
 Um utilitário de automação modular em PowerShell projetado para configurar o Windows 11 (e 10) rapidamente após uma formatação. Instale seus programas favoritos, aplique otimizações de sistema e acesse atalhos úteis com facilidade.
 
 > **Nota:** Este projeto está em desenvolvimento e é destinado para uso pessoal. Este software será fornecido com os computadores que eu reparo.
