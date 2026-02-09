@@ -25,20 +25,19 @@ Um utilitário de automação modular em PowerShell projetado para configurar o 
 * **Atalhos Rápidos:** Acesso direto a configurações profundas do Windows (Ativação, Apps Padrão, etc.).
 * **Extras e Manutenção:**
   * Executor de comandos manuais.
-  * Acesso rápido ao MAS (Microsoft Activation Scripts).
   * Criação rápida de Ponto de Restauração.
 * **Recurso de Reversão (Undo):** Aplicou um tweak e não gostou? O script possui um botão dedicado para **desfazer** as alterações.
 
 ## 📦 Softwares Incluídos
 
-A lista utiliza o repositório oficial do Windows Package Manager (Winget) e inclui:
+A lista utiliza o repositório oficial do Windows Package Manager (Winget) e inclui softwares das seguintes categorias:
 
-* **Internet:** Brave, Discord, Firefox, PicoTorrent, Thunderbird, Unigram, Vencord, WhatsApp, Zen Browser.
-* **Multimídia:** AIMP, Audacity, CapCut, foobar2000, HandBrake, K-Lite Codec Pack, OBS Studio, Spotify, Stremio, VLC.
-* **Gráficos:** Affinity, Blender, FastStone, GIMP, Greenshot, Inkscape, IrfanView, Krita, MediBang, Paint.NET, ShareX, XnView MP.
-* **Jogos:** Amazon Games, EA App, Epic Games, Fishstrap, GOG, osu!lazer, Prism Launcher, SRB2, Steam, Ubisoft Connect, YARG.
-* **Dev:** .NET (6/8), FileZilla, Git, Java (17/21), Notepad++, PuTTY, Python, Visual C++, VS Code, WinMerge, WinSCP.
-* **Sistema:** CPU-Z, CrystalDiskInfo, Everything, GPU-Z, KeePassXC, LibreOffice, Malwarebytes, NanaZip, Notion, Open-Shell, PowerToys, Radmin VPN, Revo Uninstaller, SumatraPDF, TeraCopy, Virtual Desktop, VRCX, WizTree.
+* **Internet**
+* **Multimídia**
+* **Gráficos**
+* **Jogos**
+* **Dev**
+* **Sistema**
 
 ## ⚠️ Aviso Legal
 

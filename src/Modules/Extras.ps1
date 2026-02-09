@@ -10,32 +10,11 @@
     $GrpTools.ForeColor = $ColorAccent
     $GrpTools.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
 
-    # --- Botão MAS ---
-    $BtnMAS = New-Object System.Windows.Forms.Button
-    $BtnMAS.Text = (Get-Text "ExtraMAS")
-    $BtnMAS.Size = New-Object System.Drawing.Size(200, 45)
-    $BtnMAS.Location = New-Object System.Drawing.Point(20, 35)
-    $BtnMAS.BackColor = $ColorButton
-    $BtnMAS.ForeColor = $ColorAccent
-    $BtnMAS.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
-    $BtnMAS.FlatStyle = "Flat"
-    $BtnMAS.FlatAppearance.BorderColor = $ColorAccent
-    $BtnMAS.FlatAppearance.BorderSize = 1
-    $BtnMAS.Cursor = [System.Windows.Forms.Cursors]::Hand
-
-    $BtnMAS.Add_Click({
-        try {
-            Start-Process powershell -ArgumentList "-NoProfile -Command `"irm https://get.activated.win | iex`""
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show((Get-Text "ExtraError") + ": $_", (Get-Text "ExtraError"))
-        }
-    })
-
     # --- Botão Restore Point ---
     $BtnRestore = New-Object System.Windows.Forms.Button
     $BtnRestore.Text = (Get-Text "ExtraRestorePoint")
     $BtnRestore.Size = New-Object System.Drawing.Size(220, 45)
-    $BtnRestore.Location = New-Object System.Drawing.Point(240, 35)
+    $BtnRestore.Location = New-Object System.Drawing.Point(20, 35)
     $BtnRestore.BackColor = $ColorButton
     $BtnRestore.ForeColor = $ColorText
     $BtnRestore.Font = New-Object System.Drawing.Font("Segoe UI", 9)
@@ -53,7 +32,6 @@
         }
     })
 
-    $GrpTools.Controls.Add($BtnMAS)
     $GrpTools.Controls.Add($BtnRestore)
 
     # --- GroupBox: Execução Manual ---
