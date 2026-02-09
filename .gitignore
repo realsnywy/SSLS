@@ -1,0 +1,14 @@
+# Ignorar atalhos do Windows (caminhos absolutos quebram em outros PCs)
+*.lnk
+
+# Ignorar arquivos temporários e de build do Visual Studio/C#
+bin/
+obj/
+*.exe
+*.pdb
+
+# Ignorar configurações de usuário do VS Code
+.vscode/
+
+# Ignorar logs de execução se criarmos
+*.log

@@ -1,6 +1,14 @@
-﻿function Get-TweaksList {
+<#
+    Módulo: Tweaks.ps1
+    Descrição: Lista de otimizações de registro e sistema, e construção da tabela de gestão.
+#>
+
+# ==========================================
+# Lista de Otimizações
+# ==========================================
+function Get-TweaksList {
     return @(
-        # --- Visual & Interface ---
+        # --- Grupo: Visual & Interface ---
         [PSCustomObject]@{
             Nome = (Get-Text "TweakContextMenu");
             Descricao = (Get-Text "TweakContextMenuDesc");
@@ -44,16 +52,17 @@
             Desfazer = { Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "EnableTransparency" -Value 1 -Type DWord -Force }
         },
 
-        # --- Desempenho & Gaming ---
+        # --- Grupo: Desempenho & Gaming ---
         [PSCustomObject]@{
             Nome = (Get-Text "TweakPowerPlan");
             Descricao = (Get-Text "TweakPowerPlanDesc");
             Acao = {
+                # Ativa o plano de Desempenho Máximo (Ultimate Performance)
                 powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
                 powercfg -setactive e9a42b02-d5df-448d-aa00-03f14749eb61
             };
             Desfazer = {
-                # Reverte para o plano "Equilibrado" (Balanced) padrão do Windows
+                # Reverte para o plano Equilibrado
                 powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e
             }
         },
@@ -90,7 +99,7 @@
                  $key = "HKCU:\Control Panel\Mouse"
                  Set-ItemProperty -Path $key -Name "MouseSpeed" -Value "1"
                  Set-ItemProperty -Path $key -Name "MouseThreshold1" -Value "6"
-                 Set-ItemProperty -Path $key -Name "MouseThreshold2" -Value "10"
+                 Set-ItemProperty -Path $key -Name "MouseThreshold2" -Value "1"
             }
         },
         [PSCustomObject]@{
@@ -124,7 +133,7 @@
             Desfazer = { Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "HwSchMode" -Value 1 -Type DWord -Force }
         },
 
-        # --- Rede & Sistema ---
+        # --- Grupo: Rede & Sistema ---
         [PSCustomObject]@{
             Nome = (Get-Text "TweakNetwork");
             Descricao = (Get-Text "TweakNetworkDesc");
@@ -156,7 +165,7 @@
             }
         },
 
-        # --- Privacidade & Debloat ---
+        # --- Grupo: Privacidade & Debloat ---
         [PSCustomObject]@{
             Nome = (Get-Text "TweakTelemetry");
             Descricao = (Get-Text "TweakTelemetryDesc");
@@ -219,10 +228,22 @@
 
 $Global:TweaksList = Get-TweaksList
 
+# ==========================================
+# Interface Gráfica
+# ==========================================
 function Initialize-TweaksTab {
-    param($ParentPanel, $ColorPanel, $ColorText, $ColorBG, $ColorAccent, $ColorButton)
+    param(
+        $ParentPanel,
+        $ColorPanel,
+        $ColorText,
+        $ColorBG,
+        $ColorAccent,
+        $ColorButton
+    )
+
     $ParentPanel.Controls.Clear()
 
+    # Cria a grade (tabela) de opções
     $TweakGrid = New-Object System.Windows.Forms.DataGridView
     $TweakGrid.Dock = "Fill"
     $TweakGrid.BackgroundColor = $ColorPanel
@@ -238,12 +259,13 @@ function Initialize-TweaksTab {
     $TweakGrid.MultiSelect = $false
     $TweakGrid.ReadOnly = $false
 
-    # Estilos
+    # Estilização das células
     $TweakGrid.DefaultCellStyle.BackColor = $ColorPanel
     $TweakGrid.DefaultCellStyle.ForeColor = $ColorText
     $TweakGrid.DefaultCellStyle.SelectionBackColor = $ColorButton
     $TweakGrid.DefaultCellStyle.SelectionForeColor = $ColorText
 
+    # Cabeçalho
     $TweakGrid.EnableHeadersVisualStyles = $false
     $TweakGrid.ColumnHeadersDefaultCellStyle.BackColor = $ColorBG
     $TweakGrid.ColumnHeadersDefaultCellStyle.ForeColor = $ColorAccent
@@ -252,13 +274,15 @@ function Initialize-TweaksTab {
     $TweakGrid.ColumnHeadersHeight = 35
     $TweakGrid.ColumnHeadersHeightSizeMode = "DisableResizing"
 
-    # Colunas
+    # Definição das Colunas
+    # 1. Checkbox
     $ColCheck = New-Object System.Windows.Forms.DataGridViewCheckBoxColumn
     $ColCheck.HeaderText = ""
     $ColCheck.Width = 30
     $ColCheck.Name = "Check"
     [void]$TweakGrid.Columns.Add($ColCheck)
 
+    # 2. Nome
     $ColName = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $ColName.HeaderText = "Nome"
     $ColName.Width = 400
@@ -266,21 +290,22 @@ function Initialize-TweaksTab {
     $ColName.ReadOnly = $true
     [void]$TweakGrid.Columns.Add($ColName)
 
+    # 3. Descrição
     $ColDesc = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $ColDesc.HeaderText = "Descrição"
+    $ColDesc.HeaderText = (Get-Text "HeaderDescription")
     $ColDesc.AutoSizeMode = "Fill"
     $ColDesc.Name = "Descricao"
     $ColDesc.ReadOnly = $true
     [void]$TweakGrid.Columns.Add($ColDesc)
 
-    # Ordenar a lista de tweaks por nome antes de exibir
+    # Popula a grade com os dados ordenados
     $SortedTweaks = $Global:TweaksList | Sort-Object Nome
 
     foreach ($tweak in $SortedTweaks) {
         $row = $TweakGrid.Rows.Add()
         $TweakGrid.Rows[$row].Cells["Nome"].Value = $tweak.Nome
         $TweakGrid.Rows[$row].Cells["Descricao"].Value = $tweak.Descricao
-        $TweakGrid.Rows[$row].Tag = $tweak
+        $TweakGrid.Rows[$row].Tag = $tweak # Guarda o objeto para execução
     }
 
     $Global:TweakGrid = $TweakGrid
