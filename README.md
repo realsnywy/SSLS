@@ -9,8 +9,8 @@ Um utilitário de automação modular em PowerShell projetado para configurar o 
 > **Nota:** Este projeto está em desenvolvimento e é destinado para "uso ultra-pessoal", moldado especificamente para minhas necessidades. Atualizações serão raras e focadas apenas no que eu uso, então não espere suporte frequente ou novos recursos genéricos.
 
 <p align="center">
-  <img src="screenshot_software.png" alt="Programas" width="45%">
-  <img src="screenshot_tweaks.png" alt="Otimizações" width="45%">
+  <img src="https://github.com/user-attachments/assets/b7db595d-48ce-427f-a87f-686ded2a3ce1" alt="Programas" width="45%"/>
+  <img src="https://github.com/user-attachments/assets/daf03a14-4dfe-436f-bdd1-ae8921830afe" alt="Otimizações" width="45%"/>
 </p>
 
 ## 🚀 Funcionalidades
