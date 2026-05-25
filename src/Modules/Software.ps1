@@ -33,6 +33,7 @@ function Get-SoftwareList {
         [PSCustomObject]@{ Nome = "Hytale";             Id = "HypixelStudios.Hytale";   Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescHytale") },
         [PSCustomObject]@{ Nome = "Hydra Launcher";     Id = "HydraLauncher.Hydra";     Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescHydra") },
         [PSCustomObject]@{ Nome = "Parsec";             Id = "Parsec.Parsec";           Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescParsec") },
+        [PSCustomObject]@{ Nome = "Parsec (VDD)";       Id = "Parsec.ParsecVDD";        Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescParsecVDD") },
         [PSCustomObject]@{ Nome = "Prism Launcher";     Id = "PrismLauncher.PrismLauncher"; Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescPrism") },
         [PSCustomObject]@{ Nome = "Steam";              Id = "Valve.Steam";             Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescSteam") },
         [PSCustomObject]@{ Nome = "Unity Hub";          Id = "Unity.UnityHub";          Categoria = (Get-Text "CatGames"); Descricao = (Get-Text "DescUnityHub") },
@@ -50,6 +51,12 @@ function Get-SoftwareList {
         [PSCustomObject]@{ Nome = "VS Code";            Id = "Microsoft.VisualStudioCode"; Categoria = (Get-Text "CatDevelopment"); Descricao = (Get-Text "DescVSCode") },
         [PSCustomObject]@{ Nome = "Windows Terminal";   Id = "Microsoft.WindowsTerminal"; Categoria = (Get-Text "CatDevelopment"); Descricao = (Get-Text "DescWindowsTerminal") },
 
+        # Additional development packages imported from winget export
+        [PSCustomObject]@{ Nome = "Visual Studio 2022 Community"; Id = "Microsoft.VisualStudio.2022.Community"; Categoria = (Get-Text "CatDevelopment"); Descricao = (Get-Text "DescVS2022Community") },
+        [PSCustomObject]@{ Nome = "Python Launcher";     Id = "Python.Launcher"; Categoria = (Get-Text "CatDevelopment"); Descricao = (Get-Text "DescPythonLauncher") },
+        [PSCustomObject]@{ Nome = "Windows SDK 10.0.26100"; Id = "Microsoft.WindowsSDK.10.0.26100"; Categoria = (Get-Text "CatDevelopment"); Descricao = (Get-Text "DescWindowsSDK1026100") },
+        [PSCustomObject]@{ Nome = "Rustup (Rust)";      Id = "Rustlang.Rustup"; Categoria = (Get-Text "CatDevelopment"); Descricao = (Get-Text "DescRustup") },
+
         # --- Categoria: Sistema ---
         [PSCustomObject]@{ Nome = "EarTrumpet";         Id = "File-New-Project.EarTrumpet"; Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescEarTrumpet") },
         [PSCustomObject]@{ Nome = "NanaZip";            Id = "M2Team.NanaZip";          Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescNanaZip") },
@@ -62,6 +69,13 @@ function Get-SoftwareList {
         [PSCustomObject]@{ Nome = "SumatraPDF";         Id = "SumatraPDF.SumatraPDF";   Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescSumatraPDF") },
         [PSCustomObject]@{ Nome = "Virtual Desktop";    Id = "VirtualDesktop.Streamer"; Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescVirtualDesktop") },
         [PSCustomObject]@{ Nome = "WizTree";            Id = "AntibodySoftware.WizTree"; Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescWizTree") },
+
+        # Additional system / utility packages imported from winget export
+        [PSCustomObject]@{ Nome = "Bitdefender";        Id = "Bitdefender.Bitdefender"; Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescBitdefender") },
+        [PSCustomObject]@{ Nome = "Motorola Mobile Drivers"; Id = "Motorola.MobileDrivers"; Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescMotorolaDrivers") },
+        [PSCustomObject]@{ Nome = "NVCleanstall";       Id = "TechPowerUp.NVCleanstall"; Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescNVCleanstall") },
+        [PSCustomObject]@{ Nome = "Microsoft WSL";      Id = "Microsoft.WSL";          Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescWSL") },
+        [PSCustomObject]@{ Nome = "ALCOM";              Id = "anatawa12.ALCOM";        Categoria = (Get-Text "CatSystem"); Descricao = (Get-Text "DescALCOM") },
 
         # --- Categoria: Bibliotecas ---
         [PSCustomObject]@{ Nome = "DirectX";            Id = "Microsoft.DirectX";       Categoria = (Get-Text "CatLibraries"); Descricao = (Get-Text "DescDirectX") },
@@ -84,6 +98,7 @@ function Get-SoftwareList {
         [PSCustomObject]@{ Nome = "Windows App Runtime 1.6"; Id = "Microsoft.WindowsAppRuntime.1.6"; Categoria = (Get-Text "CatLibraries"); Descricao = (Get-Text "DescWARv16") },
         [PSCustomObject]@{ Nome = "Windows App Runtime 1.7"; Id = "Microsoft.WindowsAppRuntime.1.7"; Categoria = (Get-Text "CatLibraries"); Descricao = (Get-Text "DescWARv17") },
         [PSCustomObject]@{ Nome = "Windows App Runtime 1.8"; Id = "Microsoft.WindowsAppRuntime.1.8"; Categoria = (Get-Text "CatLibraries"); Descricao = (Get-Text "DescWARv18") },
+        [PSCustomObject]@{ Nome = "VSTO Runtime";       Id = "Microsoft.VSTOR";        Categoria = (Get-Text "CatLibraries"); Descricao = (Get-Text "DescVSTOR") },
         [PSCustomObject]@{ Nome = "XNA Redist";         Id = "Microsoft.XNARedist";     Categoria = (Get-Text "CatLibraries"); Descricao = (Get-Text "DescXNARedist") }
     )
 }
