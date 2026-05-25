@@ -111,6 +111,24 @@ namespace SSLSSetup
             en["SuccessInstall"] = "Successfully installed at ";
             en["AlreadyInstalled"] = "SSLS seems to be installed already. Reinstall?";
             Locales["en-US"] = en;
+
+            var es = new Dictionary<string, string>();
+            es["Title"] = "SSLS - Snywy's Silly Little Script";
+            es["Subtitle"] = "Seleccione idioma y acción:";
+            es["Install"] = "Instalar";
+            es["Run"] = "Ejecutar";
+            es["Uninstall"] = "Desinstalar";
+            es["StatusReady"] = "Listo.";
+            es["StatusInstalling"] = "Instalando...";
+            es["StatusDone"] = "¡Instalación completada!";
+            es["StatusRunning"] = "Ejecutando script...";
+            es["StatusUninstalling"] = "Desinstalando...";
+            es["StatusUninstalled"] = "Desinstalado.";
+            es["ErrorAdminInstall"] = "La instalación en C:\\SSLS requiere privilegios de administrador. ¿Reiniciar como administrador?";
+            es["ErrorAdminUninstall"] = "La desinstalación requiere privilegios de administrador.";
+            es["SuccessInstall"] = "Instalado correctamente en ";
+            es["AlreadyInstalled"] = "SSLS parece estar instalado ya. ¿Reinstalar?";
+            Locales["es-ES"] = es;
         }
 
         private string T(string key)
@@ -152,16 +170,23 @@ namespace SSLSSetup
             cmbLanguage = new ComboBox();
             cmbLanguage.Items.Add("Português (Brasil)");
             cmbLanguage.Items.Add("English (US)");
+            cmbLanguage.Items.Add("Español (España)");
             cmbLanguage.SelectedIndex = 0; // Default PT
-            cmbLanguage.Location = new Point(440, 25);
-            cmbLanguage.Size = new Size(140, 30);
+            cmbLanguage.Location = new Point(390, 25);
+            cmbLanguage.Size = new Size(190, 30);
             cmbLanguage.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbLanguage.Font = new Font("Segoe UI", 9);
             cmbLanguage.BackColor = ColorButton;
             cmbLanguage.ForeColor = ColorText;
             cmbLanguage.FlatStyle = FlatStyle.Flat;
             cmbLanguage.SelectedIndexChanged += new EventHandler((s, e) => {
-                CurrentLang = cmbLanguage.SelectedIndex == 0 ? "pt-BR" : "en-US";
+                switch(cmbLanguage.SelectedIndex)
+                {
+                    case 0: CurrentLang = "pt-BR"; break;
+                    case 1: CurrentLang = "en-US"; break;
+                    case 2: CurrentLang = "es-ES"; break;
+                    default: CurrentLang = "pt-BR"; break;
+                }
                 UpdateLanguage();
             });
             pnlHeader.Controls.Add(cmbLanguage);

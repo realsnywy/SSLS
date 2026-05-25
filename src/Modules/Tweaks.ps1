@@ -222,6 +222,156 @@ function Get-TweaksList {
             Desfazer = {
                 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting" -Name "Disabled" -Value 0 -Force
             }
+        },
+
+        # --- Grupo: Otimizações Adicionais ---
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakDO");
+            Descricao = (Get-Text "TweakDODesc");
+            Acao = {
+                $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config"
+                if (!(Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
+                Set-ItemProperty -Path $path -Name "DODownloadMode" -Value 0 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Value 1 -Force
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakSearchbox");
+            Descricao = (Get-Text "TweakSearchboxDesc");
+            Acao = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Value 0 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Value 2 -Force
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakWifiSense");
+            Descricao = (Get-Text "TweakWifiSenseDesc");
+            Acao = {
+                New-ItemProperty -Path "HKLM:\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" -Name "value" -Value 0 -PropertyType DWORD -Force -ErrorAction SilentlyContinue | Out-Null
+                New-ItemProperty -Path "HKLM:\Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" -Name "value" -Value 0 -PropertyType DWORD -Force -ErrorAction SilentlyContinue | Out-Null
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKLM:\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" -Name "value" -Value 1 -Force -ErrorAction SilentlyContinue
+                Set-ItemProperty -Path "HKLM:\Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" -Name "value" -Value 1 -Force -ErrorAction SilentlyContinue
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakAdId");
+            Descricao = (Get-Text "TweakAdIdDesc");
+            Acao = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Value 0 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Value 1 -Force
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakSmartScreen");
+            Descricao = (Get-Text "TweakSmartScreenDesc");
+            Acao = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" -Name "EnableWebContentEvaluation" -Value 0 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" -Name "EnableWebContentEvaluation" -Value 1 -Force
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakWSearch");
+            Descricao = (Get-Text "TweakWSearchDesc");
+            Acao = {
+                Stop-Service -Name "WSearch" -Force -ErrorAction SilentlyContinue
+                Set-Service -Name "WSearch" -StartupType Disabled
+            };
+            Desfazer = {
+                Set-Service -Name "WSearch" -StartupType Automatic
+                Start-Service -Name "WSearch" -ErrorAction SilentlyContinue
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakJumpLists");
+            Descricao = (Get-Text "TweakJumpListsDesc");
+            Acao = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackDocs" -Value 0 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackDocs" -Value 1 -Force
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakHttpAccept");
+            Descricao = (Get-Text "TweakHttpAcceptDesc");
+            Acao = {
+                New-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Value 1 -PropertyType DWORD -Force -ErrorAction SilentlyContinue | Out-Null
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Value 0 -Force -ErrorAction SilentlyContinue
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakDiagnostic");
+            Descricao = (Get-Text "TweakDiagnosticDesc");
+            Acao = {
+                Stop-Service -Name "diagnosticshub.standardcollector.service" -Force -ErrorAction SilentlyContinue
+                Set-Service -Name "diagnosticshub.standardcollector.service" -StartupType Disabled
+            };
+            Desfazer = {
+                Set-Service -Name "diagnosticshub.standardcollector.service" -StartupType Automatic
+                Start-Service -Name "diagnosticshub.standardcollector.service" -ErrorAction SilentlyContinue
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakDmwappush");
+            Descricao = (Get-Text "TweakDmwappushDesc");
+            Acao = {
+                Stop-Service -Name "dmwappushservice" -Force -ErrorAction SilentlyContinue
+                Set-Service -Name "dmwappushservice" -StartupType Disabled
+            };
+            Desfazer = {
+                Set-Service -Name "dmwappushservice" -StartupType Automatic
+                Start-Service -Name "dmwappushservice" -ErrorAction SilentlyContinue
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakWmpNetwork");
+            Descricao = (Get-Text "TweakWmpNetworkDesc");
+            Acao = {
+                Stop-Service -Name "WMPNetworkSvc" -Force -ErrorAction SilentlyContinue
+                Set-Service -Name "WMPNetworkSvc" -StartupType Disabled
+            };
+            Desfazer = {
+                Set-Service -Name "WMPNetworkSvc" -StartupType Automatic
+                Start-Service -Name "WMPNetworkSvc" -ErrorAction SilentlyContinue
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakDeviceMetadata");
+            Descricao = (Get-Text "TweakDeviceMetadataDesc");
+            Acao = {
+                $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata"
+                if (!(Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
+                Set-ItemProperty -Path $path -Name "PreventDeviceMetadataFromNetwork" -Value 1 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" -Name "PreventDeviceMetadataFromNetwork" -Value 0 -Force
+            }
+        },
+        [PSCustomObject]@{
+            Nome = (Get-Text "TweakAppCompat");
+            Descricao = (Get-Text "TweakAppCompatDesc");
+            Acao = {
+                $path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat"
+                if (!(Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
+                Set-ItemProperty -Path $path -Name "AITEnable" -Value 0 -Force
+                Set-ItemProperty -Path $path -Name "DisableUAR" -Value 1 -Force
+            };
+            Desfazer = {
+                Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "AITEnable" -Value 1 -Force
+                Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppCompat" -Name "DisableUAR" -Value 0 -Force
+            }
         }
     )
 }

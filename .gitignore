@@ -4,6 +4,7 @@
 # Ignorar arquivos temporários e de build do Visual Studio/C#
 bin/
 obj/
+*.zip
 *.exe
 *.pdb
 
